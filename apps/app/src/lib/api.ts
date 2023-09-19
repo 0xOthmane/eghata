@@ -11,7 +11,10 @@ const api = {
   /* Help Request endpoints */
   createHelpRequest: async (data: FormData) => {
     return axios.post('/help-requests', data);
-  }
+  },
+  getHelpRequests: async () => {
+    return axios.get('/help-requests');
+  },
 } as const;
 
 export const useLazyQuery = (key: QueryKey, fn: QueryFunction, options = {}) => {
