@@ -36,10 +36,10 @@ const AddressInput = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
     place_id: undefined
   });
 
-  const { placesService, placePredictions, getPlacePredictions } = usePlacesService({
-    apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    debounce: 500
-  });
+  // const { placesService, placePredictions, getPlacePredictions } = usePlacesService({
+  //   apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  //   debounce: 500
+  // });
 
   useEffect(() => {
     if (props.value) {
@@ -81,40 +81,40 @@ const AddressInput = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
           <Command>
             <CommandInput
               placeholder={t('Start typing your address...')}
-              onValueChange={(value) => getPlacePredictions({ input: value })}
+              // onValueChange={(value) => getPlacePredictions({ input: value })}
             />
 
             {
               <CommandGroup>
-                {placePredictions.map((place) => (
+                {/* {placePredictions.map((place) => ( */}
                   <CommandItem
-                    key={place.place_id}
-                    onSelect={() => {
-                      placesService?.getDetails(
-                        {
-                          placeId: place.place_id
-                        },
-                        (placeDetails: FixType) => {
-                          setLocation({
-                            address: placeDetails.formatted_address,
-                            lat: placeDetails.geometry.location.lat(),
-                            lng: placeDetails.geometry.location.lng(),
-                            place_id: place.place_id
-                          });
+                  //   key={place.place_id}
+                  //   onSelect={() => {
+                  //     placesService?.getDetails(
+                  //       {
+                  //         placeId: place.place_id
+                  //       },
+                  //       (placeDetails: FixType) => {
+                  //         setLocation({
+                  //           address: placeDetails.formatted_address,
+                  //           lat: placeDetails.geometry.location.lat(),
+                  //           lng: placeDetails.geometry.location.lng(),
+                  //           place_id: place.place_id
+                  //         });
 
-                          props.onChange({
-                            address: placeDetails.formatted_address,
-                            lat: placeDetails.geometry.location.lat(),
-                            lng: placeDetails.geometry.location.lng()
-                          });
-                        }
-                      );
-                      setOpen(false);
-                    }}
+                  //         props.onChange({
+                  //           address: placeDetails.formatted_address,
+                  //           lat: placeDetails.geometry.location.lat(),
+                  //           lng: placeDetails.geometry.location.lng()
+                  //         });
+                  //       }
+                  //     );
+                  //     setOpen(false);
+                  //   }}
                   >
-                    {place.description}
+                  {/*    {place.description} */}
                   </CommandItem>
-                ))}
+                {/* ))} */}
               </CommandGroup>
             }
           </Command>
