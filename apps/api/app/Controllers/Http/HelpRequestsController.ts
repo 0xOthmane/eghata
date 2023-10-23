@@ -5,6 +5,7 @@ import Type from 'App/Models/Type'
 import { HelpRequestStatus } from 'Contracts/status'
 import { createHelpRequestSchema } from 'shared'
 import HelpRequest from '../../Models/HelpRequest'
+import Drive from '@ioc:Adonis/Core/Drive'
 
 export default class HelpRequestController {
   public async store({ request, response }: HttpContextContract) {
@@ -17,8 +18,7 @@ export default class HelpRequestController {
         'source',
         'email',
         'name',
-        'phone',
-        'files'
+        'phone'
       ])
 
       const parsedPayload = createHelpRequestSchema.parse({
@@ -27,10 +27,15 @@ export default class HelpRequestController {
         location: JSON.parse(payload.location)
       })
 
-      // TODO: properly handle files / validate them
+      const images = request.files('files', {
+        size: '2mb',
+        extnames: ['jpg', 'png', 'gif']
+      })
+
       await Promise.allSettled(
         request.files('files').map((file) => file.move(Application.tmpPath('uploads')))
       )
+      const imgUrls = await Promise.all(await images.map((image) => Drive.getUrl(image.fileName!)))
 
       const helpRequest = await HelpRequest.create({
         longitude: parsedPayload.location.lng,
@@ -43,12 +48,7 @@ export default class HelpRequestController {
         email: parsedPayload.email,
         phone: parsedPayload.phone,
         isOnSite: parsedPayload.isOnSite === 'yes',
-        files: JSON.stringify(
-          request
-            .files('files')
-            .map((file) => file.fileName!)
-            .filter(Boolean)
-        )
+        files: JSON.stringify(imgUrls)
       })
 
       const types = await Type.query().whereIn('type', parsedPayload.types).exec()
